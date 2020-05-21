@@ -1,0 +1,39 @@
+package generators
+
+import "math"
+
+// CalculateCosineSimilarity - Used to find the cosine similarity between two byte arrays
+// dot-product two vectors
+// map[byte]int return 0 for non-existing key
+// and if two texts are equal, product will be highest
+// and if two texts are totally different, it will be 0
+func CalculateCosineSimilarity(txt1, txt2 []byte) float64 {
+	vect1 := make(map[byte]int)
+	for _, t := range txt1 {
+		vect1[t]++
+	}
+	vect2 := make(map[byte]int)
+	for _, t := range txt2 {
+		vect2[t]++
+	}
+
+	// to calculate A·B
+	dotProduct := 0.0
+	for k, v := range vect1 {
+		dotProduct += float64(v) * float64(vect2[k])
+	}
+	// to calculate |A|*|B|
+	sum1 := 0.0
+	for _, v := range vect1 {
+		sum1 += math.Pow(float64(v), 2)
+	}
+	sum2 := 0.0
+	for _, v := range vect2 {
+		sum2 += math.Pow(float64(v), 2)
+	}
+	magnitude := math.Sqrt(sum1) * math.Sqrt(sum2)
+	if magnitude == 0 {
+		return 0.0
+	}
+	return float64(dotProduct) / float64(magnitude)
+}
